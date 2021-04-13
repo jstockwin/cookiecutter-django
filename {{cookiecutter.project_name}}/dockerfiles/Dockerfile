@@ -59,7 +59,7 @@ COPY ./app_nginx.conf /etc/nginx/sites-available/app_nginx.conf
 
 EXPOSE 8000
 
-COPY . /app
+COPY . $PROJECT_DIR
 
 ENTRYPOINT ["/{{ cookiecutter.project_name }}/dockerfiles/entrypoint.sh"]
 CMD ["/{{ cookiecutter.project_name }}/dockerfiles/run.sh"]
