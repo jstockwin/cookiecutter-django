@@ -29,8 +29,9 @@ jobs:
           echo "$KUBECONFIG" | base64 --decode > $HOME/kubeconfig
           echo "$KUBERNETES_DEPLOY_CERTIFICATE" | base64 --decode > $HOME/deploy.crt
           echo "$KUBERNETES_DEPLOY_KEY" | base64 --decode > $HOME/deploy.key
+{% endraw %}
       - name: "Deploy new image to kubernetes"
-        run: kubectl --kubeconfig=$HOME/kubeconfig set image deployment/{{ cookiecutter.project_name }} {{ cookiecutter.project_name }}=ghcr.io/jstockwin/{{ cookiecutter.project_name }}:${{ steps.tagName.outputs.tag }}
+        run: kubectl --kubeconfig=$HOME/kubeconfig set image deployment/{{ cookiecutter.project_name }} {{ cookiecutter.project_name }}=ghcr.io/jstockwin/{{ cookiecutter.project_name }}:${{ "{{" }} steps.tagName.outputs.tag {{ "}}" }}
       - name: "Verify deployment"
         run: kubectl --kubeconfig=$HOME/kubeconfig rollout status deployment/{{ cookiecutter.project_name }}
       - name: Ensure kubeconfig and certificates are removed
@@ -38,4 +39,3 @@ jobs:
           rm -rf $HOME/kubeconfig
           rm -rf $HOME/deploy.crt
           rm -rf $HOME/deploy.key
-{% endraw %}
