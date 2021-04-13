@@ -171,4 +171,4 @@ if DEBUG:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 CONTACT_FORM_EMAIL_ADDRESS = os.environ.get("CONTACT_FORM_EMAIL_ADDRESS", ADMINS[0][1])
-{% endif %}
+{%- endif -%}
