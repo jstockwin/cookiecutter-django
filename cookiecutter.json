@@ -1,0 +1,6 @@
+{
+  "project_name": "project_name",
+  "admin_name": "admin_name",
+  "admin_email": "admin_email",
+  "email_settings": ["yes", "no"]
+}

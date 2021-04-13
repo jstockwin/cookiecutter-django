@@ -1,0 +1,11 @@
+/app/yourproject.log {
+        copytruncate
+        daily
+        missingok
+        rotate 14
+        compress
+        delaycompress
+        notifempty
+        create 0640 root root
+        sharedscripts
+}

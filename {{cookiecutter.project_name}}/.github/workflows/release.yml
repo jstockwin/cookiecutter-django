@@ -1,0 +1,41 @@
+name: Publish new version
+on:
+  release:
+    types: [published]
+{% raw %}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Get the tag
+        id: tagName
+        run: echo ::set-output name=tag::${GITHUB_REF/refs\/tags\//}
+      - name: Publish to Github Container Registry
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: {{ github.repository }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GH_CR_PAT }}
+          registry: ghcr.io
+          dockerfile: dockerfiles/Dockerfile
+          tags: ${{ steps.tagName.outputs.tag }}
+      - name: Write kubeconfig and certificates to file
+        env:
+          KUBECONFIG: ${{ secrets.KUBECONFIG }}
+          KUBERNETES_DEPLOY_CERTIFICATE: ${{ secrets.KUBERNETES_DEPLOY_CERTIFICATE }}
+          KUBERNETES_DEPLOY_KEY: ${{ secrets.KUBERNETES_DEPLOY_KEY }}
+        run: |
+          echo "$KUBECONFIG" | base64 --decode > $HOME/kubeconfig
+          echo "$KUBERNETES_DEPLOY_CERTIFICATE" | base64 --decode > $HOME/deploy.crt
+          echo "$KUBERNETES_DEPLOY_KEY" | base64 --decode > $HOME/deploy.key
+      - name: "Deploy new image to kubernetes"
+        run: kubectl --kubeconfig=$HOME/kubeconfig set image deployment/{{ cookiecutter.project_name }} {{ cookiecutter.project_name }}=ghcr.io/jstockwin/{{ cookiecutter.project_name }}:${{ steps.tagName.outputs.tag }}
+      - name: "Verify deployment"
+        run: kubectl --kubeconfig=$HOME/kubeconfig rollout status deployment/{{ cookiecutter.project_name }}
+      - name: Ensure kubeconfig and certificates are removed
+        run: |
+          rm -rf $HOME/kubeconfig
+          rm -rf $HOME/deploy.crt
+          rm -rf $HOME/deploy.key
+{% endraw %}
