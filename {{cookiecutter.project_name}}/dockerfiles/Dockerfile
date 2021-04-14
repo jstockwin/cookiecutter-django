@@ -7,8 +7,8 @@ ENV PROJECT_DIR /{{ cookiecutter.project_name }}
 # this), change 1000 to be your id. This solves permission issues.
 RUN groupadd --gid 1000 -o appuser
 RUN adduser --uid 1000 --gid 1000 --disabled-password --gecos "" appuser
-RUN mkdir /app
-RUN chown -R appuser:appuser /app
+RUN mkdir $PROJECT_DIR
+RUN chown -R appuser:appuser $PROJECT_DIR
 WORKDIR $PROJECT_DIR
 
 # apt update and install required packages
