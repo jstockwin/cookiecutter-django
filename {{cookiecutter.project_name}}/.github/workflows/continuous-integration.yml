@@ -6,9 +6,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build the lint container
-        run: docker-compose build lint
+        run: DOCKER_BUILDKIT=1 docker-compose build lint
       # - name: Build the tests container
-      #   run: docker-compose build tests
+      #   run: DOCKER_BUILDKIT=1 docker-compose build tests
       - name: Check linting
         run: docker-compose run --rm lint
       # - name: Run tests
